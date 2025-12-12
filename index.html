@@ -1,320 +1,615 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="ru">
 <head>
-  <meta charset="utf-8">
-  <title>Time2Race Timer</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <style>
-    :root{
-      --bg:#0b0f14;
-      --card:#0f1720;
-      --muted:#9aa4b2;
-      --text:#e6eef6;
-      --accent:#60a5fa;
-      --border:#1f2933;
-      --input:#11151a;
-      --btn:#1b2430;
-      --danger-bg:#ffcccc; /* used when <10 min as requested */
-    }
-    html,body{height:100%}
-    body {
-      margin:0;
-      font-family: Inter, Roboto, Arial, sans-serif;
-      background: linear-gradient(180deg, #051018 0%, var(--bg) 100%);
-      color:var(--text);
-      padding:18px;
-    }
-    h2 { margin:0 0 8px 0; color:var(--text); }
-    p { margin:0 0 16px 0; color:var(--muted); }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>20 Таймеров - Спортивный стиль</title>
+<style>
+  body {
+    font-family: 'Arial Rounded MT Bold', Helvetica, Arial, sans-serif;
+    background-color: #0a0a0a; /* тёмный фон */
+    color: #fff;
+    padding: 20px;
+  }
 
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:12px; }
+  h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2em;
+    color: rgb(241,250,253); /* яркий цвет для заголовка */
+    text-shadow: 100px white;
+  }
 
-    .timer {
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px;
-      box-shadow: 0 6px 18px rgba(2,6,23,0.6);
-      transition: background-color 0.25s ease, box-shadow 0.25s ease, transform 0.12s ease;
-      color:var(--text);
-    }
-    .timer:active{ transform: translateY(1px); }
+  .timers-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+  }
 
-    .display { font-size: 18px; font-weight:700; margin-bottom:6px; color:var(--text); }
-    .remaining { color:var(--text); margin-bottom:8px; font-size:25px; }
+  .timer {
+    background: linear-gradient(135deg, #232526, #7d51511c);
+    border-radius: 15px;
+    padding: 15px;
+    width: 220px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    border: 2px solid #333;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s;
+    margin: 0.3em;
+  }
 
-    .controls { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:8px; align-items:center; }
-    .controls > * { font-size:13px; }
+  .timer:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+  }
 
-    .small-input {
-      width: 120px;
-      padding:7px 8px;
-      border-radius:6px;
-      border:1px solid rgba(255,255,255,0.03);
-      background:var(--input);
-      color:var(--text);
-      outline:none;
-    }
-    .small-input[type="number"]::-webkit-outer-spin-button,
-    .small-input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .timer-display {
+    font-size: 2.2em;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-family: 'Courier New', monospace;
+    color: rgb(241,250,253); /* белый цвет для цифр */
+  }
 
-    button {
-      padding:7px 9px;
-      border-radius:6px;
-      border:1px solid rgba(255,255,255,0.04);
-      background:var(--btn);
-      color:var(--text);
-      cursor:pointer;
-      transition: background 0.12s ease, transform 0.06s ease;
-    }
-    button:hover{ filter:brightness(1.05) }
-    button:active{ transform: translateY(1px) }
-    button:disabled{ opacity:0.45; cursor:not-allowed; }
+  .buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
 
-    .progress { height:8px; background: rgba(255,255,255,0.03); border-radius:6px; overflow:hidden; margin-top:8px; }
-    .bar { height:100%; background: var(--accent); width:100%; transition: width 0.2s linear; }
+  button {
+    flex: 1;
+    margin: 0 3px;
+    padding: 8px 12px;
+    font-size: 0.9em;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    background-color: #444; /* темный цвет для кнопок */
+    color: rgb(241,250,253); /* белый текст */
+    transition: background-color 0.3s, transform 0.1s;
+  }
 
-    .meta { font-size:12px; color:var(--muted); margin-top:6px; }
-    /* make the danger background visually distinct on dark theme: add subtle red overlay */
-    .danger-overlay {
-      box-shadow: inset 0 0 0 9999px rgba(255,50,50,0.9);
-    }
+  button:hover {
+    background-color: #222; /* чуть более темный при наведении */
+    transform: scale(1.05);
+  }
 
-    /* responsive tweaks */
-    @media (max-width:420px){
-      .small-input{ width: 100%; }
-      .controls{ gap:6px; }
-    }
-  </style>
+  /* Стиль для старт/пауза/сброс */
+  .control-btn {
+    flex: 1;
+    margin: 0 3px;
+    padding: 8px 12px;
+    font-size: 0.9em;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+  }
+  .start-btn {
+    background: linear-gradient(135deg, #00b09b, #01c733);
+  }
+  .start-btn:hover {
+    background: linear-gradient(135deg, #96c93d, #00b09b);
+    transform: scale(1.05);
+  }
+  .pause-btn {
+    background: linear-gradient(135deg, #ac6714, #ebc908);
+  }
+  .pause-btn:hover {
+    background: linear-gradient(135deg, #ffd700, #77460a);
+    transform: scale(1.05);
+  }
+  .reset-btn {
+    background: linear-gradient(135deg, #e52d27, #660b0e);
+  }
+  .reset-btn:hover {
+    background: linear-gradient(135deg, #b31217, #e52d27);
+    transform: scale(1.05);
+  }
+ .timer-title {
+  text-align: center;
+  font-size: 1.2em;
+  margin-bottom: 6px;
+  margin-top: 0px;
+  color: rgb(241,250,253);
+}
+.group {
+  display: flex;
+  flex-wrap: wrap; /* или nowrap, если хотите один ряд */
+  justify-content: center; /* или flex-start / space-between */
+  margin-bottom: 50px; /* расстояние между группами */
+}
+.numbers {
+    color: #d12205;
+    font-size: 1.4em;
+    
+}
+
+</style>
 </head>
 <body>
-  <h2>Таймеры (тёмная тема)</h2>
-  <p>Добавьте минуты или нажмите "+1 hour" — затем Start. Pause/Reset доступны.</p>
 
-  <div class="grid" id="timersRoot"></div>
+<h1>Time <span style="color: #b21d04">2</span> Race</h1>
+<div class="timers-container">
+<Div class="group" id="group1"> 
+  <!-- Таймеры 1-4, пример -->
+  <div class="timer" id="timer1">
+  <h2 class="timer-title"> # <span class="numbers">1</span> PRO</h2>
+    <div class="timer-display" id="display1">00:00:00</div>
+    <div class="buttons">
+      <button onclick="addMinute(1)">+1 мин</button>
+      <button onclick="addHour(1)">+1 час</button>
+    </div>
+    <div class="controls" style="display:flex; gap:5px;">
+      <button class="start-btn" onclick="startTimer(1)">Старт</button>
+      <button class="pause-btn" onclick="pauseTimer(1)">Пауза</button>
+      <button class="reset-btn" onclick="resetTimer(1)">Сброс</button>
+    </div>
+  </div>
+  
+  <div class="timer" id="timer2">
+      <h2 class="timer-title"> # <span class="numbers">2</span> PRO</h2>
+    <div class="timer-display" id="display2">00:00:00</div>
+    <div class="buttons">
+      <button onclick="addMinute(2)">+1 мин</button>
+      <button onclick="addHour(2)">+1 час</button>
+    </div>
+    <div class="controls" style="display:flex; gap:5px;">
+      <button class="start-btn" onclick="startTimer(2)">Старт</button>
+      <button class="pause-btn" onclick="pauseTimer(2)">Пауза</button>
+      <button class="reset-btn" onclick="resetTimer(2)">Сброс</button>
+    </div>
+  </div>
+  
+   <div class="timer" id="timer3">
+       <h2 class="timer-title"> # <span class="numbers">3</span> PRO</h2>
+    <div class="timer-display" id="display3">00:00:00</div>
+    <div class="buttons">
+      <button onclick="addMinute(3)">+1 мин</button>
+      <button onclick="addHour(3)">+1 час</button>
+    </div>
+    <div class="controls" style="display:flex; gap:5px;">
+      <button class="start-btn" onclick="startTimer(3)">Старт</button>
+      <button class="pause-btn" onclick="pauseTimer(3)">Пауза</button>
+      <button class="reset-btn" onclick="resetTimer(3)">Сброс</button>
+    </div>
+  </div>
+  
+  <div class="timer" id="timer4">
+      <h2 class="timer-title"> # <span class="numbers">4</span> PRO</h2>
+    <div class="timer-display" id="display4">00:00:00</div>
+    <div class="buttons">
+      <button onclick="addMinute(4)">+1 мин</button>
+      <button onclick="addHour(4)">+1 час</button>
+    </div>
+    <div class="controls" style="display:flex; gap:5px;">
+      <button class="start-btn" onclick="startTimer(4)">Старт</button>
+      <button class="pause-btn" onclick="pauseTimer(4)">Пауза</button>
+      <button class="reset-btn" onclick="resetTimer(4)">Сброс</button>
+    </div>
+  </div>
+  
+  <div class="timer" id="timer5">
+      <h2 class="timer-title"> # <span class="numbers">5</span> PRO</h2>
+    <div class="timer-display" id="display5">00:00:00</div>
+    <div class="buttons">
+      <button onclick="addMinute(5)">+1 мин</button>
+      <button onclick="addHour(5)">+1 час</button>
+    </div>
+    <div class="controls" style="display:flex; gap:5px;">
+      <button class="start-btn" onclick="startTimer(5)">Старт</button>
+      <button class="pause-btn" onclick="pauseTimer(5)">Пауза</button>
+      <button class="reset-btn" onclick="resetTimer(5)">Сброс</button>
+    </div>
+  </div>
+  
 
-<script>
-(function(){
-  const COUNT = 20;
-  const root = document.getElementById('timersRoot');
 
-  for(let i=0;i<COUNT;i++){
-    createTimerBlock(i+1);
-  }
+  </Div>
+  
 
-  function createTimerBlock(id){
-    const el = document.createElement('div');
-    el.className = 'timer';
-    el.setAttribute('data-id', String(id));
+  <div class="group" id="group2">
+    
+  <div class="timer" id="timer6">
+    <h2 class="timer-title"> # <span class="numbers">6</span> STD</h2>
+    <div class="timer-display" id="display6">00:00:00</div>
+    <div class="buttons">
+      <button onclick="addMinute(6)">+1 мин</button>
+      <button onclick="addHour(6)">+1 час</button>
+    </div>
+    <div class="controls" style="display:flex; gap:5px;">
+      <button class="start-btn" onclick="startTimer(6)">Старт</button>
+      <button class="pause-btn" onclick="pauseTimer(6)">Пауза</button>
+      <button class="reset-btn" onclick="resetTimer(6)">Сброс</button>
+    </div>
+  </div>
+  <div class="timer" id="timer7">
+  <h2 class="timer-title"> # <span class="numbers">7</span> STD</h2>
+    <div class="timer-display" id="display7">00:00:00</div>
+    <div class="buttons">
+      <button onclick="addMinute(7)">+1 мин</button>
+      <button onclick="addHour(7)">+1 час</button>
+    </div>
+    <div class="controls" style="display:flex; gap:5px;">
+      <button class="start-btn" onclick="startTimer(7)">Старт</button>
+      <button class="pause-btn" onclick="pauseTimer(7)">Пауза</button>
+      <button class="reset-btn" onclick="resetTimer(7)">Сброс</button>
+    </div>
+  </div>
+  <div class="timer" id="timer8">
+  <h2 class="timer-title"> # <span class="numbers">8</span> STD</h2>
+    <div class="timer-display" id="display8">00:00:00</div>
+    <div class="buttons">
+      <button onclick="addMinute(8)">+1 мин</button>
+      <button onclick="addHour(8)">+1 час</button>
+    </div>
+    <div class="controls" style="display:flex; gap:5px;">
+      <button class="start-btn" onclick="startTimer(8)">Старт</button>
+      <button class="pause-btn" onclick="pauseTimer(8)">Пауза</button>
+      <button class="reset-btn" onclick="resetTimer(8)">Сброс</button>
+    </div>
+  </div>
+  <div class="timer" id="timer9">
+  <h2 class="timer-title"> # <span class="numbers">9</span> STD</h2>
+    <div class="timer-display" id="display9">00:00:00</div>
+    <div class="buttons">
+      <button onclick="addMinute(9)">+1 мин</button>
+      <button onclick="addHour(9)">+1 час</button>
+    </div>
+    <div class="controls" style="display:flex; gap:5px;">
+      <button class="start-btn" onclick="startTimer(9)">Старт</button>
+      <button class="pause-btn" onclick="pauseTimer(9)">Пауза</button>
+      <button class="reset-btn" onclick="resetTimer(9)">Сброс</button>
+    </div>
+  </div>
+  <div class="timer" id="timer10">
+  <h2 class="timer-title"> # <span class="numbers">10</span> STD</h2>
+    <div class="timer-display" id="display10">00:00:00</div>
+    <div class="buttons">
+      <button onclick="addMinute(10)">+1 мин</button>
+      <button onclick="addHour(10)">+1 час</button>
+    </div>
+    <div class="controls" style="display:flex; gap:5px;">
+      <button class="start-btn" onclick="startTimer(10)">Старт</button>
+      <button class="pause-btn" onclick="pauseTimer(10)">Пауза</button>
+      <button class="reset-btn" onclick="resetTimer(10)">Сброс</button>
+    </div>
+  </div>
+  <!--<div class="timer" id="timer11">
+  <h2 class="timer-title"> # <span class="numbers">11</span> STD</h2>
+    <div class="timer-display" id="display11">00:00:00</div>
+    <div class="buttons">
+      <button onclick="addMinute(11)">+1 мин</button>
+      <button onclick="addHour(11)">+1 час</button>
+    </div>
+    <div class="controls" style="display:flex; gap:5px;">
+      <button class="start-btn" onclick="startTimer(11)">Старт</button>
+      <button class="pause-btn" onclick="pauseTimer(11)">Пауза</button>
+      <button class="reset-btn" onclick="resetTimer(11)">Сброс</button>
+    </div>
+  </div> -->
+  <div class="timer" id="timer12">
+  <h2 class="timer-title"> # <span class="numbers">12</span> STD</h2>
+    <div class="timer-display" id="display12">00:00:00</div>
+    <div class="buttons">
+      <button onclick="addMinute(12)">+1 мин</button>
+      <button onclick="addHour(12)">+1 час</button>
+    </div>
+    <div class="controls" style="display:flex; gap:5px;">
+      <button class="start-btn" onclick="startTimer(12)">Старт</button>
+      <button class="pause-btn" onclick="pauseTimer(12)">Пауза</button>
+      <button class="reset-btn" onclick="resetTimer(12)">Сброс</button>
+    </div>
+  </div>
+  <div class="timer" id="timer13">
+  <h2 class="timer-title"> # <span class="numbers">13</span> STD</h2>
+    <div class="timer-display" id="display13">00:00:00</div>
+    <div class="buttons">
+      <button onclick="addMinute(13)">+1 мин</button>
+      <button onclick="addHour(13)">+1 час</button>
+    </div>
+    <div class="controls" style="display:flex; gap:5px;">
+      <button class="start-btn" onclick="startTimer(13)">Старт</button>
+      <button class="pause-btn" onclick="pauseTimer(13)">Пауза</button>
+      <button class="reset-btn" onclick="resetTimer(13)">Сброс</button>
+    </div>
+  </div>
+  <div class="timer" id="timer14">
+  <h2 class="timer-title"> # <span class="numbers">14</span> STD</h2>
+    <div class="timer-display" id="display14">00:00:00</div>
+    <div class="buttons">
+      <button onclick="addMinute(14)">+1 мин</button>
+      <button onclick="addHour(14)">+1 час</button>
+    </div>
+    <div class="controls" style="display:flex; gap:5px;">
+      <button class="start-btn" onclick="startTimer(14)">Старт</button>
+      <button class="pause-btn" onclick="pauseTimer(14)">Пауза</button>
+      <button class="reset-btn" onclick="resetTimer(14)">Сброс</button>
+    </div>
+  </div>
+  
+  <div class="timer" id="timer15">
+  <h2 class="timer-title"> # <span class="numbers">15</span> STD</h2>
+    <div class="timer-display" id="display15">00:00:00</div>
+    <div class="buttons">
+      <button onclick="addMinute(15)">+1 мин</button>
+      <button onclick="addHour(15)">+1 час</button>
+    </div>
+    <div class="controls" style="display:flex; gap:5px;">
+      <button class="start-btn" onclick="startTimer(15)">Старт</button>
+      <button class="pause-btn" onclick="pauseTimer(15)">Пауза</button>
+      <button class="reset-btn" onclick="resetTimer(15)">Сброс</button>
+    </div>
+  </div>
 
-    const title = document.createElement('div');
-    title.className = 'display';
-    title.textContent = 'Cockpit #' + id;
+  <div class="timer" id="timer16">
+  <h2 class="timer-title"> # <span class="numbers">16</span> STD</h2>
+    <div class="timer-display" id="display16">00:00:00</div>
+    <div class="buttons">
+      <button onclick="addMinute(16)">+1 мин</button>
+      <button onclick="addHour(16)">+1 час</button>
+    </div>
+    <div class="controls" style="display:flex; gap:5px;">
+      <button class="start-btn" onclick="startTimer(16)">Старт</button>
+      <button class="pause-btn" onclick="pauseTimer(16)">Пауза</button>
+      <button class="reset-btn" onclick="resetTimer(16)">Сброс</button>
+    </div>
+  </div>
 
-    const remaining = document.createElement('div');
-    remaining.className = 'remaining';
-    remaining.textContent = ' 00:00:00';
+ <!-- <div class="timer" id="timer17">
+  <h2 class="timer-title"> # <span class="numbers">17</span> STD</h2>
+    <div class="timer-display" id="display17">00:00:00</div>
+    <div class="buttons">
+      <button onclick="addMinute(17)">+1 мин</button>
+      <button onclick="addHour(17)">+1 час</button>
+    </div>
+    <div class="controls" style="display:flex; gap:5px;">
+      <button class="start-btn" onclick="startTimer(17)">Старт</button>
+      <button class="pause-btn" onclick="pauseTimer(17)">Пауза</button>
+      <button class="reset-btn" onclick="resetTimer(17)">Сброс</button>
+    </div>
+  </div>-->
 
-    // inputs: minutes adder only (date removed)
-    const minsInput = document.createElement('input');
-    minsInput.type = 'number';
-    minsInput.min = '0';
-    minsInput.step = '1';
-    minsInput.placeholder = 'Минуты';
-    minsInput.className = 'small-input';
+  <!--<div class="timer" id="timer18">
+  <h2 class="timer-title"> # <span class="numbers">18</span> STD</h2>
+    <div class="timer-display" id="display18">00:00:00</div>
+    <div class="buttons">
+      <button onclick="addMinute(18)">+1 мин</button>
+      <button onclick="addHour(18)">+1 час</button>
+    </div>
+    <div class="controls" style="display:flex; gap:5px;">
+      <button class="start-btn" onclick="startTimer(18)">Старт</button>
+      <button class="pause-btn" onclick="pauseTimer(18)">Пауза</button>
+      <button class="reset-btn" onclick="resetTimer(18)">Сброс</button>
+    </div>
+  </div>-->
 
-    const addMinsBtn = document.createElement('button');
-    addMinsBtn.textContent = 'Add Minutes';
-
-    const addHourBtn = document.createElement('button');
-    addHourBtn.textContent = '+1 hour';
-
-    // controls: Start, Pause, Reset
-    const startBtn = document.createElement('button');
-    startBtn.textContent = 'Start';
-    const pauseBtn = document.createElement('button');
-    pauseBtn.textContent = 'Pause';
-    const resetBtn = document.createElement('button');
-    resetBtn.textContent = 'Reset';
-
-    const controls = document.createElement('div');
-    controls.className = 'controls';
-    controls.appendChild(minsInput);
-    controls.appendChild(addMinsBtn);
-    controls.appendChild(addHourBtn);
-    controls.appendChild(startBtn);
-    controls.appendChild(pauseBtn);
-    controls.appendChild(resetBtn);
-
-    const progress = document.createElement('div');
-    progress.className = 'progress';
-    const bar = document.createElement('div');
-    bar.className = 'bar';
-    progress.appendChild(bar);
-
-    const meta = document.createElement('div');
-    meta.className = 'meta';
+  <!--<div class="timer" id="timer19">
+  <h2 class="timer-title"> # <span class="numbers">19</span> STD</h2>
+    <div class="timer-display" id="display19">00:00:00</div>
+    <div class="buttons">
+      <button onclick="addMinute(19)">+1 мин</button>
+      <button onclick="addHour(19)">+1 час</button>
+    </div>
+    <div class="controls" style="display:flex; gap:5px;">
+      <button class="start-btn" onclick="startTimer(19)">Старт</button>
+      <button class="pause-btn" onclick="pauseTimer(19)">Пауза</button>
+      <button class="reset-btn" onclick="resetTimer(19)">Сброс</button>
+    </div>
+  </div>-->
    
 
-    el.appendChild(title);
-    el.appendChild(remaining);
-    el.appendChild(controls);
-    el.appendChild(progress);
-    el.appendChild(meta);
-    root.appendChild(el);
+ 
+  
+  </div>
 
-    // state
-    const state = {
-      totalMs: 0,
-      endAt: null,
-      running: false,
-      paused: false,
-      pauseRemaining: 0,
-      ticker: null
+  </div>
+
+
+  <!-- Остальные таймеры по аналогии -->
+</div>
+
+<script>
+
+const STORAGE_KEY = 'timers_state_v1';
+const timers = [];
+
+// Инициализация массива timers
+for (let i = 1; i <= 20; i++) {
+  timers[i] = {
+    initialSeconds: 0,
+    pausedSeconds: 0,
+    startTimestamp: null,
+    isRunning: false,
+    intervalId: null
+  };
+}
+
+// Загрузка состояния из localStorage
+function loadState() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (!raw) return;
+
+  try {
+    const saved = JSON.parse(raw);
+    for (let i = 1; i <= 20; i++) {
+      if (!saved[i]) continue;
+      timers[i].initialSeconds = saved[i].initialSeconds || 0;
+      timers[i].pausedSeconds = saved[i].pausedSeconds || 0;
+      timers[i].startTimestamp = saved[i].startTimestamp || null;
+      timers[i].isRunning = saved[i].isRunning || false;
+    }
+  } catch (e) {
+    console.error('Ошибка чтения состояния таймеров:', e);
+  }
+}
+
+// Сохранение состояния в localStorage
+function saveState() {
+  const toSave = {};
+  for (let i = 1; i <= 20; i++) {
+    toSave[i] = {
+      initialSeconds: timers[i].initialSeconds,
+      pausedSeconds: timers[i].pausedSeconds,
+      startTimestamp: timers[i].startTimestamp,
+      isRunning: timers[i].isRunning
     };
+  }
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+}
 
-    // утилиты
-    function msToHMS(ms){
-      const s = Math.max(0, Math.floor(ms/1000));
-      const hh = String(Math.floor(s/3600)).padStart(2,'0');
-      const mm = String(Math.floor((s%3600)/60)).padStart(2,'0');
-      const ss = String(s%60).padStart(2,'0');
-      return {str: hh+':'+mm+':'+ss, seconds: s};
-    }
+function formatTimeFromSeconds(seconds) {
+  const absSeconds = Math.abs(seconds);
+  const hours = Math.floor(absSeconds / 3600);
+  const minutes = Math.floor((absSeconds % 3600) / 60);
+  const secs = absSeconds % 60;
+  const sign = seconds < 0 ? '-' : '';
 
-    function updateUI(){
-      const remainingMs = state.running && state.endAt ? Math.max(0, state.endAt - Date.now()) : (state.paused ? state.pauseRemaining : state.pauseRemaining);
-      const displayStr = msToHMS(remainingMs).str;
-      remaining.textContent = displayStr;
+  return (
+    sign +
+    hours.toString().padStart(2, '0') + ':' +
+    minutes.toString().padStart(2, '0') + ':' +
+    secs.toString().padStart(2, '0')
+  );
+}
 
-      // прогресс: если totalMs == 0, сделать full (100%)
-      const total = state.totalMs > 0 ? state.totalMs : (state.pauseRemaining > 0 ? state.pauseRemaining : 1);
-      const pct = total > 0 ? (remainingMs / total) * 100 : 0;
-      bar.style.width = pct + '%';
+function updateDisplay(id) {
+  const t = timers[id];
 
-      // фон красный, если осталось меньше 10 минут (и ещё >0)
-      if(remainingMs > 0 && remainingMs < 10 * 60 * 1000){
-        // применяем тонкую красную заливку поверх карточки
-        el.style.background = 'linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))';
-        el.classList.add('danger-overlay');
-      } else {
-        el.classList.remove('danger-overlay');
-        el.style.background = 'linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))';
-      }
-
-      startBtn.disabled = state.running;
-      pauseBtn.disabled = !state.running;
-    }
-
-    function startTicker(){
-      if(state.ticker) return;
-      state.ticker = setInterval(()=>{
-        if(state.running && state.endAt && Date.now() >= state.endAt){
-          // завершение
-          state.running = false;
-          state.paused = false;
-          state.pauseRemaining = 0;
-          state.endAt = null;
-          clearInterval(state.ticker);
-          state.ticker = null;
-        }
-        updateUI();
-      }, 200);
-    }
-    function stopTicker(){
-      if(state.ticker){ clearInterval(state.ticker); state.ticker = null; }
-    }
-
-    // Add minutes
-    addMinsBtn.addEventListener('click', ()=>{
-      const mins = Math.max(0, parseInt(minsInput.value || 0, 10) || 0);
-      const addMs = mins * 60 * 1000;
-      state.totalMs = Math.max(0, state.totalMs + addMs);
-      if(state.running && state.endAt){
-        state.endAt += addMs;
-      } else if(state.paused){
-        state.pauseRemaining = Math.max(0, state.pauseRemaining + addMs);
-      } else {
-        state.pauseRemaining = Math.max(0, state.pauseRemaining + addMs);
-      }
-      updateUI();
-    });
-
-    // +1 hour button
-    addHourBtn.addEventListener('click', ()=>{
-      const addMs = 3600 * 1000;
-      state.totalMs = Math.max(0, state.totalMs + addMs);
-      if(state.running && state.endAt){
-        state.endAt += addMs;
-      } else if(state.paused){
-        state.pauseRemaining = Math.max(0, state.pauseRemaining + addMs);
-      } else {
-        state.pauseRemaining = Math.max(0, state.pauseRemaining + addMs);
-      }
-      updateUI();
-    });
-
-    // Start
-    startBtn.addEventListener('click', ()=>{
-      if(state.totalMs <= 0 && state.pauseRemaining <= 0){
-        state.totalMs = 60 * 1000;
-        state.pauseRemaining = state.totalMs;
-      }
-      if(state.paused && state.pauseRemaining > 0){
-        state.endAt = Date.now() + state.pauseRemaining;
-        state.paused = false;
-        state.running = true;
-      } else if(!state.running){
-        const startRemaining = state.pauseRemaining > 0 ? state.pauseRemaining : state.totalMs;
-        state.endAt = Date.now() + startRemaining;
-        if(state.totalMs === 0) state.totalMs = startRemaining;
-        state.running = true;
-        state.paused = false;
-      }
-      startTicker();
-      updateUI();
-    });
-
-    // Pause
-    pauseBtn.addEventListener('click', ()=>{
-      if(!state.running) return;
-      state.pauseRemaining = Math.max(0, state.endAt - Date.now());
-      state.paused = true;
-      state.running = false;
-      state.endAt = null;
-      stopTicker();
-      updateUI();
-    });
-
-    // Reset
-    resetBtn.addEventListener('click', ()=>{
-      state.totalMs = 0;
-      state.endAt = null;
-      state.running = false;
-      state.paused = false;
-      state.pauseRemaining = 0;
-      stopTicker();
-      updateUI();
-    });
-
-    // Enter on minutes input
-    minsInput.addEventListener('keydown', (e)=>{
-      if(e.key === 'Enter') addMinsBtn.click();
-    });
-
-    // initialize UI
-    updateUI();
+  let elapsedSeconds = t.pausedSeconds;
+  if (t.isRunning && t.startTimestamp !== null) {
+    const now = Date.now();
+    const diffMs = now - t.startTimestamp;
+    elapsedSeconds += Math.floor(diffMs / 1000);
   }
 
-  // синхронизируем UI при видимости страницы
-  document.addEventListener('visibilitychange', ()=>{
-    if(document.visibilityState === 'visible'){
-      // ничего дополнительного не требуется — таймеры обновятся на следующем тике
-    }
-  });
+  const remainingSeconds = t.initialSeconds - elapsedSeconds;
 
-})();
+  const displayEl = document.getElementById(`display${id}`);
+  if (displayEl) {
+    displayEl.textContent = formatTimeFromSeconds(remainingSeconds);
+  }
+
+  const block = document.getElementById(`timer${id}`);
+  if (block) {
+    if (remainingSeconds > 0 && remainingSeconds < 600) {
+      block.style.backgroundColor = 'red';
+    } else if (remainingSeconds < 0) {
+      block.style.backgroundColor = 'red';
+    } else {
+      block.style.backgroundColor = '';
+    }
+  }
+}
+
+// +1 минута
+function addMinute(id) {
+  const t = timers[id];
+  t.initialSeconds += 60;
+  saveState();
+  updateDisplay(id);
+}
+
+// +1 час
+function addHour(id) {
+  const t = timers[id];
+  t.initialSeconds += 3600;
+  saveState();
+  updateDisplay(id);
+}
+
+// Старт
+function startTimer(id) {
+  const t = timers[id];
+  if (t.isRunning) return;
+
+  t.isRunning = true;
+
+  // если до этого уже шёл таймер, но страница перезагружалась,
+  // startTimestamp мог быть в прошлом — обновим его на сейчас,
+  // но учтём уже прошедшее в pausedSeconds
+  t.startTimestamp = Date.now();
+
+  t.intervalId = setInterval(() => {
+    updateDisplay(id);
+  }, 200);
+
+  saveState();
+  updateDisplay(id);
+}
+
+// Пауза
+function pauseTimer(id) {
+  const t = timers[id];
+  if (!t.isRunning) return;
+
+  if (t.startTimestamp !== null) {
+    const now = Date.now();
+    const diffMs = now - t.startTimestamp;
+    t.pausedSeconds += Math.floor(diffMs / 1000);
+  }
+
+  t.isRunning = false;
+  t.startTimestamp = null;
+
+  if (t.intervalId !== null) {
+    clearInterval(t.intervalId);
+    t.intervalId = null;
+  }
+
+  saveState();
+  updateDisplay(id);
+}
+
+// Сброс
+function resetTimer(id) {
+  const t = timers[id];
+
+  if (t.intervalId !== null) {
+    clearInterval(t.intervalId);
+    t.intervalId = null;
+  }
+
+  t.initialSeconds = 0;
+  t.pausedSeconds = 0;
+  t.startTimestamp = null;
+  t.isRunning = false;
+
+  saveState();
+  updateDisplay(id);
+}
+
+// Восстановление при загрузке страницы
+window.addEventListener('load', () => {
+  loadState();
+
+  // Для всех таймеров, которые были "запущены", нужно снова запустить setInterval
+  for (let i = 1; i <= 20; i++) {
+    const t = timers[i];
+
+    // Если таймер был запущен до перезагрузки
+    if (t.isRunning) {
+      // Ничего не трогаем в pausedSeconds и initialSeconds,
+      // просто считаем, что он продолжает идти с момента сохранённого startTimestamp.
+      // Но важно: startTimestamp был сохранён как число (ms).
+      t.intervalId = setInterval(() => {
+        updateDisplay(i);
+      }, 200);
+    }
+
+    // Обновим отображение для всех
+    updateDisplay(i);
+  }
+});
+
+
+
+
+
+
 </script>
+
 </body>
 </html>
-
