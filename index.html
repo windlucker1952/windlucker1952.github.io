@@ -3,13 +3,20 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>TIME2RIDE TIMER</title>
+<title>TIME2RACE TIMER</title>
 <style>
   body {
     font-family: 'Arial Rounded MT Bold', Helvetica, Arial, sans-serif;
-    background-color: #0a0a0a; /* тёмный фон */
-    color: #fff;
-    padding: 20px;
+    background-color: #000000;
+    
+    
+    background-image: url(BGT2R.png);
+    background-size: auto;        
+      background-repeat: no-repeat;  
+      background-position: center;   
+      background-attachment: fixed;  /*ЛОГО тайм ту рейс*/
+    
+    padding: 20px; 
   }
 
   h1 {
@@ -28,11 +35,11 @@
   }
 
   .timer {
-    background: linear-gradient(135deg, #232526, #7d51511c);
+    background: linear-gradient(135deg, #131414, #442c2c77);
     border-radius: 15px;
     padding: 15px;
     width: 220px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.301);
     border: 2px solid #333;
     transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s;
     margin: 0.3em;
@@ -50,6 +57,7 @@
     margin-bottom: 10px;
     font-family: 'Courier New', monospace;
     color: rgb(241,250,253); /* белый цвет для цифр */
+    /*-webkit-text-stroke: 0.01em black;*/
   }
 
   .buttons {
@@ -139,8 +147,10 @@
   <h2 class="timer-title"> # <span class="numbers">1</span> PRO</h2>
     <div class="timer-display" id="display1">00:00:00</div>
     <div class="buttons">
-      <button onclick="addMinute(1)">+1 мин</button>
-      <button onclick="addHour(1)">+1 час</button>
+      <button onclick="addMinute(1)">+1м</button>
+      <button onclick="addTenMinutes(1)">+10м</button>
+      <button onclick="addHour(1)">+1ч</button>
+      
     </div>
     <div class="controls" style="display:flex; gap:5px;">
       <button class="start-btn" onclick="startTimer(1)">Старт</button>
@@ -153,8 +163,9 @@
       <h2 class="timer-title"> # <span class="numbers">2</span> PRO</h2>
     <div class="timer-display" id="display2">00:00:00</div>
     <div class="buttons">
-      <button onclick="addMinute(2)">+1 мин</button>
-      <button onclick="addHour(2)">+1 час</button>
+      <button onclick="addMinute(2)">+1м</button>
+      <button onclick="addTenMinutes(2)">+10м</button>
+      <button onclick="addHour(2)">+1ч</button>
     </div>
     <div class="controls" style="display:flex; gap:5px;">
       <button class="start-btn" onclick="startTimer(2)">Старт</button>
@@ -167,8 +178,9 @@
        <h2 class="timer-title"> # <span class="numbers">3</span> PRO</h2>
     <div class="timer-display" id="display3">00:00:00</div>
     <div class="buttons">
-      <button onclick="addMinute(3)">+1 мин</button>
-      <button onclick="addHour(3)">+1 час</button>
+      <button onclick="addMinute(3)">+1м</button>
+      <button onclick="addTenMinutes(3)">+10м</button>
+      <button onclick="addHour(3)">+1ч</button>
     </div>
     <div class="controls" style="display:flex; gap:5px;">
       <button class="start-btn" onclick="startTimer(3)">Старт</button>
@@ -181,8 +193,9 @@
       <h2 class="timer-title"> # <span class="numbers">4</span> PRO</h2>
     <div class="timer-display" id="display4">00:00:00</div>
     <div class="buttons">
-      <button onclick="addMinute(4)">+1 мин</button>
-      <button onclick="addHour(4)">+1 час</button>
+      <button onclick="addMinute(4)">+1м</button>
+      <button onclick="addTenMinutes(4)">+10м</button>
+      <button onclick="addHour(4)">+1ч</button>
     </div>
     <div class="controls" style="display:flex; gap:5px;">
       <button class="start-btn" onclick="startTimer(4)">Старт</button>
@@ -195,8 +208,9 @@
       <h2 class="timer-title"> # <span class="numbers">5</span> PRO</h2>
     <div class="timer-display" id="display5">00:00:00</div>
     <div class="buttons">
-      <button onclick="addMinute(5)">+1 мин</button>
-      <button onclick="addHour(5)">+1 час</button>
+      <button onclick="addMinute(5)">+1м</button>
+      <button onclick="addTenMinutes(5)">+10м</button>
+      <button onclick="addHour(5)">+1ч</button>
     </div>
     <div class="controls" style="display:flex; gap:5px;">
       <button class="start-btn" onclick="startTimer(5)">Старт</button>
@@ -216,8 +230,9 @@
     <h2 class="timer-title"> # <span class="numbers">6</span> STD</h2>
     <div class="timer-display" id="display6">00:00:00</div>
     <div class="buttons">
-      <button onclick="addMinute(6)">+1 мин</button>
-      <button onclick="addHour(6)">+1 час</button>
+      <button onclick="addMinute(6)">+1м</button>
+      <button onclick="addTenMinutes(6)">+10м</button>
+      <button onclick="addHour(6)">+1ч</button>
     </div>
     <div class="controls" style="display:flex; gap:5px;">
       <button class="start-btn" onclick="startTimer(6)">Старт</button>
@@ -229,8 +244,9 @@
   <h2 class="timer-title"> # <span class="numbers">7</span> STD</h2>
     <div class="timer-display" id="display7">00:00:00</div>
     <div class="buttons">
-      <button onclick="addMinute(7)">+1 мин</button>
-      <button onclick="addHour(7)">+1 час</button>
+      <button onclick="addMinute(7)">+1м</button>
+      <button onclick="addTenMinutes(7)">+10м</button>
+      <button onclick="addHour(7)">+1ч</button>
     </div>
     <div class="controls" style="display:flex; gap:5px;">
       <button class="start-btn" onclick="startTimer(7)">Старт</button>
@@ -242,8 +258,9 @@
   <h2 class="timer-title"> # <span class="numbers">8</span> STD</h2>
     <div class="timer-display" id="display8">00:00:00</div>
     <div class="buttons">
-      <button onclick="addMinute(8)">+1 мин</button>
-      <button onclick="addHour(8)">+1 час</button>
+      <button onclick="addMinute(8)">+1м</button>
+      <button onclick="addTenMinutes(8)">+10м</button>
+      <button onclick="addHour(8)">+1ч</button>
     </div>
     <div class="controls" style="display:flex; gap:5px;">
       <button class="start-btn" onclick="startTimer(8)">Старт</button>
@@ -255,8 +272,9 @@
   <h2 class="timer-title"> # <span class="numbers">9</span> STD</h2>
     <div class="timer-display" id="display9">00:00:00</div>
     <div class="buttons">
-      <button onclick="addMinute(9)">+1 мин</button>
-      <button onclick="addHour(9)">+1 час</button>
+      <button onclick="addMinute(9)">+1м</button>
+      <button onclick="addTenMinutes(9)">+10м</button>
+      <button onclick="addHour(9)">+1ч</button>
     </div>
     <div class="controls" style="display:flex; gap:5px;">
       <button class="start-btn" onclick="startTimer(9)">Старт</button>
@@ -268,8 +286,9 @@
   <h2 class="timer-title"> # <span class="numbers">10</span> STD</h2>
     <div class="timer-display" id="display10">00:00:00</div>
     <div class="buttons">
-      <button onclick="addMinute(10)">+1 мин</button>
-      <button onclick="addHour(10)">+1 час</button>
+      <button onclick="addMinute(10)">+1м</button>
+      <button onclick="addTenMinutes(10)">+10м</button>
+      <button onclick="addHour(10)">+1ч</button>
     </div>
     <div class="controls" style="display:flex; gap:5px;">
       <button class="start-btn" onclick="startTimer(10)">Старт</button>
@@ -281,8 +300,9 @@
   <h2 class="timer-title"> # <span class="numbers">11</span> STD</h2>
     <div class="timer-display" id="display11">00:00:00</div>
     <div class="buttons">
-      <button onclick="addMinute(11)">+1 мин</button>
-      <button onclick="addHour(11)">+1 час</button>
+      <button onclick="addMinute(11)">+1м</button>
+      <button onclick="addTenMinutes(11)">+10м</button>
+      <button onclick="addHour(11)">+1ч</button>
     </div>
     <div class="controls" style="display:flex; gap:5px;">
       <button class="start-btn" onclick="startTimer(11)">Старт</button>
@@ -294,8 +314,9 @@
   <h2 class="timer-title"> # <span class="numbers">12</span> STD</h2>
     <div class="timer-display" id="display12">00:00:00</div>
     <div class="buttons">
-      <button onclick="addMinute(12)">+1 мин</button>
-      <button onclick="addHour(12)">+1 час</button>
+      <button onclick="addMinute(12)">+1м</button>
+      <button onclick="addTenMinutes(12)">+10м</button>
+      <button onclick="addHour(12)">+1ч</button>
     </div>
     <div class="controls" style="display:flex; gap:5px;">
       <button class="start-btn" onclick="startTimer(12)">Старт</button>
@@ -307,8 +328,9 @@
   <h2 class="timer-title"> # <span class="numbers">13</span> STD</h2>
     <div class="timer-display" id="display13">00:00:00</div>
     <div class="buttons">
-      <button onclick="addMinute(13)">+1 мин</button>
-      <button onclick="addHour(13)">+1 час</button>
+      <button onclick="addMinute(13)">+1м</button>
+      <button onclick="addTenMinutes(13)">+10м</button>
+      <button onclick="addHour(13)">+1ч</button>
     </div>
     <div class="controls" style="display:flex; gap:5px;">
       <button class="start-btn" onclick="startTimer(13)">Старт</button>
@@ -320,8 +342,9 @@
   <h2 class="timer-title"> # <span class="numbers">14</span> STD</h2>
     <div class="timer-display" id="display14">00:00:00</div>
     <div class="buttons">
-      <button onclick="addMinute(14)">+1 мин</button>
-      <button onclick="addHour(14)">+1 час</button>
+      <button onclick="addMinute(14)">+1м</button>
+      <button onclick="addTenMinutes(14)">+10м</button>
+      <button onclick="addHour(14)">+1ч</button>
     </div>
     <div class="controls" style="display:flex; gap:5px;">
       <button class="start-btn" onclick="startTimer(14)">Старт</button>
@@ -334,8 +357,9 @@
   <h2 class="timer-title"> # <span class="numbers">15</span> STD</h2>
     <div class="timer-display" id="display15">00:00:00</div>
     <div class="buttons">
-      <button onclick="addMinute(15)">+1 мин</button>
-      <button onclick="addHour(15)">+1 час</button>
+      <button onclick="addMinute(15)">+1м</button>
+      <button onclick="addTenMinutes(15)">+10м</button>
+      <button onclick="addHour(15)">+1ч</button>
     </div>
     <div class="controls" style="display:flex; gap:5px;">
       <button class="start-btn" onclick="startTimer(15)">Старт</button>
@@ -348,8 +372,9 @@
   <h2 class="timer-title"> # <span class="numbers">16</span> STD</h2>
     <div class="timer-display" id="display16">00:00:00</div>
     <div class="buttons">
-      <button onclick="addMinute(16)">+1 мин</button>
-      <button onclick="addHour(16)">+1 час</button>
+      <button onclick="addMinute(16)">+1м</button>
+      <button onclick="addTenMinutes(16)">+10м</button>
+      <button onclick="addHour(16)">+1ч</button>
     </div>
     <div class="controls" style="display:flex; gap:5px;">
       <button class="start-btn" onclick="startTimer(16)">Старт</button>
@@ -362,8 +387,8 @@
   <h2 class="timer-title"> # <span class="numbers">17</span> STD</h2>
     <div class="timer-display" id="display17">00:00:00</div>
     <div class="buttons">
-      <button onclick="addMinute(17)">+1 мин</button>
-      <button onclick="addHour(17)">+1 час</button>
+      <button onclick="addMinute(17)">+1м</button>
+      <button onclick="addHour(17)">+1ч</button>
     </div>
     <div class="controls" style="display:flex; gap:5px;">
       <button class="start-btn" onclick="startTimer(17)">Старт</button>
@@ -376,8 +401,8 @@
   <h2 class="timer-title"> # <span class="numbers">18</span> STD</h2>
     <div class="timer-display" id="display18">00:00:00</div>
     <div class="buttons">
-      <button onclick="addMinute(18)">+1 мин</button>
-      <button onclick="addHour(18)">+1 час</button>
+      <button onclick="addMinute(18)">+1м</button>
+      <button onclick="addHour(18)">+1ч</button>
     </div>
     <div class="controls" style="display:flex; gap:5px;">
       <button class="start-btn" onclick="startTimer(18)">Старт</button>
@@ -390,8 +415,8 @@
   <h2 class="timer-title"> # <span class="numbers">19</span> STD</h2>
     <div class="timer-display" id="display19">00:00:00</div>
     <div class="buttons">
-      <button onclick="addMinute(19)">+1 мин</button>
-      <button onclick="addHour(19)">+1 час</button>
+      <button onclick="addMinute(19)">+1м</button>
+      <button onclick="addHour(19)">+1ч</button>
     </div>
     <div class="controls" style="display:flex; gap:5px;">
       <button class="start-btn" onclick="startTimer(19)">Старт</button>
@@ -504,7 +529,7 @@ function updateDisplay(id) {
   }
 }
 
-// +1 минута
+// +1мута
 function addMinute(id) {
   const t = timers[id];
   t.initialSeconds += 60;
@@ -512,10 +537,16 @@ function addMinute(id) {
   updateDisplay(id);
 }
 
-// +1 час
+// +1ч
 function addHour(id) {
   const t = timers[id];
   t.initialSeconds += 3600;
+  saveState();
+  updateDisplay(id);
+}
+function addTenMinutes(id) {
+  const t = timers[id];
+  t.initialSeconds += 600;
   saveState();
   updateDisplay(id);
 }
@@ -528,7 +559,7 @@ function startTimer(id) {
   t.isRunning = true;
 
   // если до этого уже шёл таймер, но страница перезагружалась,
-  // startTimestamp мог быть в прошлом — обновим его на сейчас,
+  // startTimestamp мог быть в прошлом — обновим его на сеч,
   // но учтём уже прошедшее в pausedSeconds
   t.startTimestamp = Date.now();
 
@@ -610,7 +641,6 @@ window.addEventListener('load', () => {
 
 
 </script>
-
+version2.5
 </body>
 </html>
-
